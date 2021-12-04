@@ -1,19 +1,21 @@
-use std::{env, error::Error, fs, num::ParseIntError, path::Path, process};
+#![allow(dead_code)]
+
+use day_1::*;
+
+use std::{error::Error, path::Path};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let args: Vec<String> = env::args().skip(1).collect();
+    print!("Part 1: ");
+    part_1()?;
+    print!("Part 2: ");
+    part_2()?;
 
-    match args.len() {
-        1 => run(&args[0]),
-        _ => {
-            println!("Please provide a single test data file.");
-            process::exit(1);
-        }
-    }
+    Ok(())
 }
 
-fn run(path: &str) -> Result<(), Box<dyn Error>> {
-    let test_data_path = Path::new(path);
+fn part_1() -> Result<(), Box<dyn Error>> {
+    let test_data_path = parse_args();
+    let test_data_path = Path::new(&test_data_path);
     let test_data = read_test_data(test_data_path)?;
     let count = count_increases(test_data);
 
@@ -21,21 +23,24 @@ fn run(path: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn read_test_data(path: &Path) -> Result<Vec<u32>, Box<dyn Error>> {
-    Ok(fs::read_to_string(path)?
-        .lines()
-        .map(|l| l.parse())
-        .collect::<Result<Vec<u32>, ParseIntError>>()?)
-}
-
-fn count_increases(depths: Vec<u32>) -> u32 {
-    depths.iter().enumerate().fold(0_u32, |acc, (i, n)| {
-        if i < depths.len() - 1 {
-            if depths[i + 1] > *n {
-                return acc + 1;
+fn part_2() -> Result<(), Box<dyn Error>> {
+    let test_data_path = parse_args();
+    let test_data_path = Path::new(&test_data_path);
+    let test_data = read_test_data(test_data_path)?;
+    let test_data = test_data
+        .iter()
+        .enumerate()
+        .map(|(i, n)| {
+            if i < test_data.len() - 2 {
+                n + test_data[i + 1] + test_data[i + 2]
+            } else {
+                0
             }
-        }
+        })
+        .collect();
 
-        acc
-    })
+    let count = count_increases(test_data);
+
+    println!("There are {} increases.", count);
+    Ok(())
 }
