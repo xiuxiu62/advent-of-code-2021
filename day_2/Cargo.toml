@@ -1,0 +1,15 @@
+[package]
+name = "day_2"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "lib_day_2"
+path = "src/lib.rs"
+
+[[bin]]
+name = "day_2"
+path = "src/bin/main.rs"
+
+[dependencies]
+thiserror = "1.0.30"
